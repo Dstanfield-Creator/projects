@@ -61,8 +61,8 @@ echo "=== lab-up started $(date '+%Y-%m-%d %H:%M:%S') | mode=$MODE ==="
 #   1. $PROXMOX_TOKEN in the environment
 #   2. $TOKEN_FILE (mode 600), one line: PVEAPIToken=<user>@<realm>!<tokenid>=<secret>
 #   3. 1Password CLI (op) — item / vault / field named below (may prompt in the app)
-OP_ITEM="${OP_ITEM:-Proxmox}"
-OP_VAULT="${OP_VAULT:-Homelab}"
+OP_ITEM="${OP_ITEM:-pve-api-token}"
+OP_VAULT="${OP_VAULT:-Infra}"
 OP_FIELD="${OP_FIELD:-API Token Header}"
 TOKEN_FILE="${TOKEN_FILE:-$HOME/.config/lab/proxmox.token}"
 
