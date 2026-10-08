@@ -19,16 +19,11 @@ This is the hub project. Most other homelab entries in this repo are workloads o
 
 ## Network
 
-```
-                      ┌────────────────────────────────────────────┐
-  Home LAN ───────────┤ vmbr0   lab LAN  (192.0.2.0/24)            │
-  (router / UniFi)    │         pve, docker-host, paperclip, pbs,  │
-                      │         hackerv1, mcserver (bare metal)    │
-                      ├────────────────────────────────────────────┤
-                      │ vmbr1000 ┐                                 │
-                      │ vmbr1001 ├ Ludus range bridges (isolated)  │
-                      │ vmbr1002 ┘ DS-router NATs the range out    │
-                      └────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+  LAN["Home LAN<br/>router / UniFi"] --> VMBR0["vmbr0 - lab LAN 192.0.2.0/24<br/>pve, docker-host, paperclip,<br/>pbs, hackerv1, mcserver"]
+  VMBR0 -.->|isolated| RANGE["vmbr1000-1002<br/>Ludus range bridges"]
+  RANGE --> DSR["DS-router<br/>NATs the range out"]
 ```
 
 - `vmbr0` is a plain (non-VLAN-aware) bridge on the lab LAN. The UniFi router upstream does DHCP and routing.

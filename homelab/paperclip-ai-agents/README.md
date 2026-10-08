@@ -10,14 +10,12 @@ Give a team of AI agents real operational reach into the homelab, with the same 
 
 ## Architecture
 
-```
-  Workstation ── SSH tunnel :3100 ──►  VM 210 paperclip  (UI + agents, user unit paperclipai.service)
-                                            │
-                     ┌──────────────────────┼──────────────────────┐
-                     ▼                      ▼                      ▼
-             Proxmox API :8006        PBS API :8007           lab hosts (SSH, agent key)
-             token paperclip@pve!agents  token paperclip@pbs!agents   docker-host, …
-             role: see below          Admin (accepted risk)
+```mermaid
+flowchart TB
+  WS["Workstation"] -->|SSH tunnel :3100| PC["VM 210 paperclip<br/>UI + agents"]
+  PC --> PVE["Proxmox API :8006<br/>scoped token"]
+  PC --> PBS["PBS API :8007<br/>scoped token"]
+  PC --> HOSTS["lab hosts via SSH<br/>docker-host and others"]
 ```
 
 - Paperclip runs as an unprivileged user in a **systemd user unit**; logs via `journalctl _SYSTEMD_USER_UNIT=paperclipai.service`.

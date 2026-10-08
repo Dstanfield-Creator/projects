@@ -21,12 +21,13 @@ Hotel, airport and conference networks are hostile by default: captive portals, 
 
 ## Network design
 
-```
-   Hotel Wi-Fi / Ethernet ──► WAN (wlan1 or eth0)  ┐
-                                                   │  OpenWrt: firewall zones wan ⇄ lan, NAT,
-   Phone / laptop / console ──► LAN AP (wlan0) ────┤  DHCP 10.42.0.0/24, DNS with ad/tracker blocking
-                                                   │
-                                        tailscale0 ┘ ──► exit node at home (optional, per-device or all)
+```mermaid
+flowchart LR
+  HOTEL["Hotel Wi-Fi / Ethernet"] --> WAN["WAN - wlan1 or eth0"]
+  CLIENTS["Phone / laptop / console"] --> AP["LAN AP - wlan0"]
+  WAN --> OW["OpenWrt<br/>firewall zones, NAT,<br/>DHCP, DNS filtering"]
+  AP --> OW
+  OW --> TS["tailscale0<br/>exit node at home (optional)"]
 ```
 
 - **Two radios:** one associates to the hotel network as a client (`wwan`), the other broadcasts your own SSID. Ethernet WAN is preferred when available.

@@ -14,13 +14,17 @@ Three things kept breaking SSH to the lab:
 
 ## Design
 
-```
-   Windows desktop ──┐
-   Linux workstation ─┤  tailnet (WireGuard, 100.64.0.0/10)
-   Attack VM ─────────┼──────────────────────────────────────  MagicDNS: <host>.example.ts.net
-   Minecraft host ────┤
-   Paperclip VM ──────┤
-   Laptops / phone ───┘        ACLs: who may reach which port on which tag
+```mermaid
+flowchart LR
+  subgraph TN["tailnet - WireGuard mesh"]
+    D["Windows desktop"]
+    A["Attack VM"]
+    M["Minecraft host"]
+    P["Paperclip VM"]
+    L["Laptops / phone"]
+  end
+  TN --> DNS["MagicDNS<br/>host.example.ts.net"]
+  TN --> ACL["ACLs: who reaches which<br/>port on which tag"]
 ```
 
 - **Every lab host runs Tailscale**, including VMs on Proxmox. Nothing is port-forwarded on the home router.

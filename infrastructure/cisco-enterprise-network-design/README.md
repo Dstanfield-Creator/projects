@@ -14,22 +14,12 @@
 
 ## Topology
 
-```
-                         Internet
-                             │
-                     ┌───────┴───────┐
-                     │  ASA 5506-X   │  outside: ISP /30
-                     │  inside: 10.10.0.2/30 ──► default route for the campus
-                     └───────┬───────┘
-                             │ routed link
-                  ┌──────────┴──────────┐
-                  │  CORE (3750 stack)  │  SVIs for every VLAN, DHCP relay, OSPF/static
-                  └──┬────────────┬─────┘
-            802.1Q trunk      802.1Q trunk
-          ┌──────┴──────┐  ┌──────┴──────┐
-          │ ACCESS-1    │  │ ACCESS-2    │   2960, access ports, voice VLAN, port-security
-          │ users/voice │  │ servers     │
-          └─────────────┘  └─────────────┘
+```mermaid
+flowchart TB
+  NET["Internet"] --> ASA["ASA 5506-X<br/>outside: ISP /30<br/>inside: 10.10.0.2/30"]
+  ASA -->|routed link| CORE["CORE - 3750 stack<br/>SVIs, DHCP relay, routing"]
+  CORE -->|802.1Q trunk| A1["ACCESS-1<br/>users / voice"]
+  CORE -->|802.1Q trunk| A2["ACCESS-2<br/>servers"]
 ```
 
 ## VLAN and addressing plan

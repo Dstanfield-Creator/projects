@@ -10,20 +10,12 @@ Hand-building an AD lab takes a weekend and rots the moment you break it. Ludus 
 
 ## Range layout
 
-```
-                 vmbr0 (lab LAN)
-                       │
-            ┌──────────┴──────────┐
-            │  DS-router-debian11 │  VM 105  NAT + DHCP for the range
-            └──────────┬──────────┘
-                       │  vmbr1000-1002 (range VLANs, isolated from the LAN)
-      ┌────────────────┼─────────────────────┐
-┌─────┴──────┐  ┌──────┴───────┐  ┌──────────┴─────┐
-│ DS-ad-dc   │  │ DS-ad-win11  │  │ DS-kali        │
-│ Server 2022│  │ 22H2 Ent.    │  │ attacker       │
-│ VM 106     │  │ VM 107       │  │ VM 108         │
-└────────────┘  └──────────────┘  └────────────────┘
-   primary DC      domain member      in-range Kali
+```mermaid
+flowchart TB
+  LAN["vmbr0 - lab LAN"] --> R["DS-router (VM 105)<br/>NAT + DHCP"]
+  R -->|vmbr1000-1002 isolated| DC["DS-ad-dc (VM 106)<br/>Server 2022 DC"]
+  R --> WS["DS-ad-win11 (VM 107)<br/>Win 11 22H2 member"]
+  R --> K["DS-kali (VM 108)<br/>in-range attacker"]
 ```
 
 The range only reaches the internet through its own router VM, so anything that runs inside it, including live malware samples and C2 traffic, stays off the real LAN.
