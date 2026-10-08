@@ -59,22 +59,22 @@ echo "=== lab-up started $(date '+%Y-%m-%d %H:%M:%S') | mode=$MODE ==="
 # ── Credentials ──────────────────────────────────────────────────────────────
 # The Proxmox API token is never stored in this script. It is read, in order, from:
 #   1. $PROXMOX_TOKEN in the environment
-#   2. 1Password CLI (op) — item / vault / field named below
-#   3. $TOKEN_FILE (mode 600), one line: PVEAPIToken=<user>@<realm>!<tokenid>=<secret>
+#   2. $TOKEN_FILE (mode 600), one line: PVEAPIToken=<user>@<realm>!<tokenid>=<secret>
+#   3. 1Password CLI (op) — item / vault / field named below (may prompt in the app)
 OP_ITEM="${OP_ITEM:-Proxmox}"
 OP_VAULT="${OP_VAULT:-Homelab}"
 OP_FIELD="${OP_FIELD:-API Token Header}"
 TOKEN_FILE="${TOKEN_FILE:-$HOME/.config/lab/proxmox.token}"
 
 PROXMOX_TOKEN="${PROXMOX_TOKEN:-}"
-if [[ -z "$PROXMOX_TOKEN" ]] && command -v op &>/dev/null && op whoami &>/dev/null; then
-    PROXMOX_TOKEN="$(op item get "$OP_ITEM" --vault "$OP_VAULT" --fields "$OP_FIELD" 2>/dev/null)" || PROXMOX_TOKEN=""
-fi
 if [[ -z "$PROXMOX_TOKEN" && -r "$TOKEN_FILE" ]]; then
     PROXMOX_TOKEN="$(head -n1 "$TOKEN_FILE")"
 fi
+if [[ -z "$PROXMOX_TOKEN" ]] && command -v op &>/dev/null; then
+    PROXMOX_TOKEN="$(timeout 20 op item get "$OP_ITEM" --vault "$OP_VAULT" --fields "$OP_FIELD" 2>/dev/null)" || PROXMOX_TOKEN=""
+fi
 if [[ -z "$PROXMOX_TOKEN" ]]; then
-    echo "ERROR: no Proxmox API token found (PROXMOX_TOKEN, 1Password, or $TOKEN_FILE)." >&2
+    echo "ERROR: no Proxmox API token found (PROXMOX_TOKEN, $TOKEN_FILE, or 1Password)." >&2
     exit 1
 fi
 

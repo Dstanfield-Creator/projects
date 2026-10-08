@@ -39,8 +39,8 @@ Two arrays at the top of the script control what is touched:
 The scripts talk to the Proxmox REST API with a dedicated **API token** (`lab-agent@pve!lab-scripts`) that has only the privileges needed to query and start/stop guests and shut the node down. The token is **not** in the script. It is resolved in this order:
 
 1. `$PROXMOX_TOKEN` in the environment
-2. 1Password CLI (`op item get … --fields "API Token Header"`), so the secret lives in a vault and the shell session unlocks it
-3. `~/.config/lab/proxmox.token` (mode 600)
+2. `~/.config/lab/proxmox.token` (mode 600), the fast path for unattended runs
+3. 1Password CLI (`op item get … --fields "API Token Header"`), with a 20 s timeout because the desktop app may ask for approval
 
 If none is found the script exits before doing anything. See [`lab.env.example`](./lab.env.example).
 
